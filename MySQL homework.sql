@@ -40,11 +40,11 @@ from users
 where username 
 like '%a%';
 
-#9.Изкарайте всички потребители от базата, чието име се състои от 2 имена.!!!!!!!!!!!!!!!!!!!!!!!
+#9.Изкарайте всички потребители от базата, чието име се състои от 2 имена.
 select * from users
 where username like '% %'
 
-#10.Регистрирайте 1 юзър през UI-а и го забранете след това от базата.!!!!!!!!!!!
+#10.Регистрирайте 1 юзър през UI-а и го забранете след това от базата.
 update users
 set isBanned=0
 where username='Testuser1'
@@ -86,23 +86,31 @@ on posts.userId=users.id
 group by posts.userid 
 having count(posts.userid) <2;
 
-#17.Колко потребителя с по 1 пост имаме? Използвайте join заявка, having clause и вложени заявки. !!!!!!!!!!!!!!!!!!!
-select users.username , count(posts.userid) 
-from posts 
-join users 
-on posts.userId=users.id 
-group by posts.userid 
-having count(posts.userid) = 1;
+#17.Колко потребителя с по 1 пост имаме? Използвайте join заявка, having clause и вложени заявки.
+=select count(username)
+from
+(
+select u.username, count(*) as posts
+from users u
+left join posts p
+on u.id=p.userId
+group by u.username
+having (posts = 1)
+) a
 
-#18.Колко потребителя с по малко от 5 поста имаме? Използвайте join заявка, having clause и вложени заявки. !!!!!!!!!!!!!!!!!!
-select users.username , count(posts.userid) 
-from posts 
-join users 
-on posts.userId=users.id 
-group by posts.userid
-having count(posts.userid) < 5;
+#18.Колко потребителя с по малко от 5 поста имаме? Използвайте join заявка, having clause и вложени заявки.
+select count(username)
+from
+(
+select u.username, count(*) as posts
+from users u
+left join posts p
+on u.id=p.userId
+group by u.username
+having (posts < 5)
+) a
 
-#19.Кои са постовете с най-много коментари? Използвайте вложена заявка и where clause. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#19.Кои са постовете с най-много коментари? Използвайте вложена заявка и where clause. 
 select *
 from posts
 where commentsCount = (select max(commentsCount) from posts)
@@ -139,14 +147,13 @@ from posts
 where caption 
 not LIKE '';
 
-#26.Покажете името на потребителя с най-много коментари. Използвайте join клауза. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-select users.username, count(posts.userid) 
-from posts 
-join users 
-on posts.userId=users.id 
-group by posts.userid 
-order by count(posts.userid) desc 
-limit 1;
+#26.Покажете името на потребителя с най-много коментари. Използвайте join клауза.
+select u.username, count(*) as c
+from comments c
+inner join users u
+on c.userId = u.id
+group by u.username
+order by c desc
 
 #27.Покажете всички коментари, към кой пост принадлежат и кой ги е направил. Използвайте join клауза.
 select comments.content, posts.caption, users.username
