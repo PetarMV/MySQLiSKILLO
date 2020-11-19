@@ -41,11 +41,13 @@ where username
 like '%a%';
 
 #9.Изкарайте всички потребители от базата, чието име се състои от 2 имена.!!!!!!!!!!!!!!!!!!!!!!!
-
+select * from users
+where username like '% %'
 
 #10.Регистрирайте 1 юзър през UI-а и го забранете след това от базата.!!!!!!!!!!!
-insert into users(username,password,salt,email) 
-value('Petar','123','$ssd','noemail');
+update users
+set isBanned=0
+where username='Testuser1'
 
 
 #11.Брой на всички постове.
@@ -101,7 +103,9 @@ group by posts.userid
 having count(posts.userid) < 5;
 
 #19.Кои са постовете с най-много коментари? Използвайте вложена заявка и where clause. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+select *
+from posts
+where commentsCount = (select max(commentsCount) from posts)
 
 #20.Покажете най-стария пост. Може да използвате order или с aggregate function.
 select * 
@@ -162,17 +166,44 @@ order by count(users_liked_posts.usersId) desc
 limit 5;
 
 #29.Кои отребители не са like-вали постове?
+select u.username, count(*) c
+from users_liked_posts ul
+inner join
+users u
+on u.id=ul.usersId
+group by u.username
+order by c desc
 
 #30.Кои постове имат like-ове. Покажете id на поста и caption? 
+select p.id, p.caption
+from posts p
+inner join users_liked_posts ul
+on p.id=ul.postsId
 
 #31.Кои постове имат най-много like-ове? Покажете id на поста и caption.
+select p.id, p.caption, count(*) c
+from posts p
+inner join users_liked_posts ul
+on p.id=ul.postsId
+group by p.id, p.caption
+order by c desc
 
-#32.Кои постове имат най-много like-ове. Покажете id на поста и caption.
+#32.Покажете всички потребители, които не са follow-нати от никого.
+select u.username from users u
+left join
+users_followers_users uf
+on u.id = usersId_1
+where usersId_1 is null
 
 #33.Покажете всички потребители, които не са follow-нати от никого.
+select u.username from users u
+left join
+users_followers_users uf
+on u.id = usersId_2
+where usersId_2 is null
 
 #34.Регистрирайте потребител през UI. 
-#Follow-нете някой съществуващ потребител и проверете дали записа го има в базата.
+
 
 
 
