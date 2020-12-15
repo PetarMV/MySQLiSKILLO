@@ -5,13 +5,23 @@ Enter your age:
 16
 You are eligible to work.*/
 
-
+import java.util.Scanner;
 
 public class ZADACHA22 {
 
-	public static void main(String[] args) {
-		
+	public static void main(String[] Strings) {
 
+		Scanner x = new Scanner(System.in);
+		System.out.println("Please enter your age :");
+		int age = x.nextInt();
+		if (age >= 16) {
+			System.out.println("The person is eligible to work.");
+		}
+		if (age < 16) {
+			System.out.println("The person is not eligible to work.");
+		}
+		
 	}
 
 }
+
